@@ -2,18 +2,22 @@ import { useState } from 'react';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import ProjectInfo from './components/ProjectInfo';
+import EdaView from './components/EdaView';
+import ModelView from './components/ModelView'; // <-- Importamos la nueva vista
 
 function App() {
-  // Estado para abrir/cerrar el menú (cerrado por defecto en laptops para ahorrar espacio)
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  // Estado para controlar qué pantalla estamos viendo
-  const [currentView, setCurrentView] = useState<'dashboard' | 'info'>('dashboard');
+  // Añadimos 'model' al tipo del estado de vistas
+  const [currentView, setCurrentView] = useState<'dashboard' | 'info' | 'eda' | 'model'>('dashboard');
+
+  const [doctorProfile] = useState({
+    nombre: 'Dr. Invitado',
+    especialidad: 'Cardiología',
+    hospital: 'Hospital General Universitario'
+  });
 
   return (
-    // Estructura Flex: Menú a la izquierda, Contenido a la derecha (ocupando toda la altura)
     <div className="flex h-screen bg-slate-100 overflow-hidden font-sans">
-      
-      {/* El Sidebar Retráctil */}
       <Sidebar 
         isOpen={isSidebarOpen} 
         toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} 
@@ -21,24 +25,26 @@ function App() {
         setCurrentView={setCurrentView}
       />
 
-      {/* Contenedor Principal con Scroll Independiente */}
-      <div className="flex-1 flex flex-col overflow-y-auto">
-        
-        {/* Header Superior (Ya no tiene el nombre de la app, se fue al menú) */}
+      <div className="flex-1 flex flex-col overflow-y-auto relative">
         <header className="bg-white border-b p-4 shadow-sm flex items-center justify-between sticky top-0 z-10">
           <h1 className="text-lg font-bold text-slate-700">
-            {currentView === 'dashboard' ? 'Evaluación Cardiovascular' : 'Documentación del Modelo'}
+            {currentView === 'dashboard' ? 'Evaluación Cardiovascular' : 
+             currentView === 'info' ? 'Información del Proyecto' :
+             currentView === 'eda' ? 'Análisis Exploratorio de Datos' :
+             currentView === 'model' ? 'Validación y Rendimiento de la IA' : // <-- Título dinámico
+             'Documentación del Modelo'}
           </h1>
           <span className="text-sm bg-blue-100 text-blue-800 px-3 py-1.5 rounded-full font-semibold">
-            Dr. Invitado
+            {doctorProfile.nombre}
           </span>
         </header>
 
-        {/* Área donde se carga la vista seleccionada */}
-        <main className="p-6">
-          {currentView === 'dashboard' ? <Dashboard /> : <ProjectInfo />}
+        <main className="p-6 flex-1 h-full">
+          {currentView === 'dashboard' ? <Dashboard doctorProfile={doctorProfile} /> :
+           currentView === 'eda' ? <EdaView /> :
+           currentView === 'model' ? <ModelView /> : // <-- Renderizado condicional
+           <ProjectInfo />}
         </main>
-        
       </div>
     </div>
   );
