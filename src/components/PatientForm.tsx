@@ -5,17 +5,16 @@ interface PatientFormProps {
   formData: FormData;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  isLoading: boolean; // <-- Recibimos la propiedad
 }
 
-export default function PatientForm({ formData, onChange, onSubmit }: PatientFormProps) {
+export default function PatientForm({ formData, onChange, onSubmit, isLoading }: PatientFormProps) {
   return (
-    // Reducimos el padding de p-8 a p-5 o p-6
     <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 md:p-6">
       <h2 className="text-xl font-semibold text-slate-800 mb-4 border-b pb-2">
         Historia Clínica
       </h2>
       
-      {/* Reducimos el espacio vertical de space-y-6 a space-y-4 */}
       <form onSubmit={onSubmit} className="space-y-4">
         
         {/* 1. Demografía */}
@@ -91,8 +90,27 @@ export default function PatientForm({ formData, onChange, onSubmit }: PatientFor
           </div>
         </div>
 
-        <button type="submit" className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-xl transition-all shadow-md">
-          Ejecutar Análisis
+        {/* Botón dinámico */}
+        <button 
+          type="submit" 
+          disabled={isLoading} // Bloquea el botón
+          className={`w-full mt-2 font-bold py-2.5 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2
+            ${isLoading 
+              ? 'bg-blue-400 cursor-not-allowed text-white' 
+              : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
+        >
+          {isLoading ? (
+            <>
+              {/* Ícono SVG de carga girando */}
+              <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Procesando IA...
+            </>
+          ) : (
+            'Ejecutar Análisis'
+          )}
         </button>
       </form>
     </div>

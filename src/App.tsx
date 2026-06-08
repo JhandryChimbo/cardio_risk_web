@@ -6,6 +6,9 @@ import RiskResults from './components/RiskResults';
 function App() {
   const [hasResult, setHasResult] = useState<boolean>(false);
   const [riskData, setRiskData] = useState<RiskData | null>(null);
+  
+  // NUEVO: Estado de carga
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [formData, setFormData] = useState<FormData>({
     fecha_nacimiento: '', gender: '1', altura_cm: '', peso_kg: '',
@@ -24,13 +27,14 @@ function App() {
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
-const handleCalculate = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleCalculate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    // Convertimos la fecha a días
+    // 1. Bloqueamos el botón y activamos el estado de carga
+    setIsLoading(true);
+    
     const edad_dias_calculada = calculateDaysAlive(formData.fecha_nacimiento);
     
-    // Armamos el objeto exacto que pide FastAPI
     const payload = {
       edad_dias: edad_dias_calculada,
       gender: parseInt(formData.gender),
@@ -46,7 +50,6 @@ const handleCalculate = async (e: React.FormEvent<HTMLFormElement>) => {
     };
 
     try {
-      // Hacemos la llamada HTTP al backend EN LA NUBE
       const response = await fetch('https://cardio-risk-api-aibk.onrender.com/predict', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -57,7 +60,6 @@ const handleCalculate = async (e: React.FormEvent<HTMLFormElement>) => {
         throw new Error('Error en la comunicación con el servidor');
       }
 
-      // El backend nos devuelve el objeto RiskData perfecto
       const data: RiskData = await response.json();
       setRiskData(data);
       setHasResult(true);
@@ -65,6 +67,9 @@ const handleCalculate = async (e: React.FormEvent<HTMLFormElement>) => {
     } catch (error) {
       console.error("Error al predecir:", error);
       alert("Hubo un error al conectarse con el servidor de IA.");
+    } finally {
+      // 2. Sin importar si falla o tiene éxito, apagamos el estado de carga al terminar
+      setIsLoading(false);
     }
   };
 
@@ -77,7 +82,6 @@ const handleCalculate = async (e: React.FormEvent<HTMLFormElement>) => {
         </div>
       </header>
 
-      {/* Grid: 5 columnas (form) y 7 columnas (resultados) */}
       <main className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 xl:grid-cols-12 gap-8">
         
         <div className="xl:col-span-5">
@@ -85,6 +89,7 @@ const handleCalculate = async (e: React.FormEvent<HTMLFormElement>) => {
             formData={formData} 
             onChange={handleInputChange} 
             onSubmit={handleCalculate} 
+            isLoading={isLoading} // <-- Pasamos el estado al formulario
           />
         </div>
 
