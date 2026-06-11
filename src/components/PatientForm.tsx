@@ -12,13 +12,18 @@ interface PatientFormProps {
 }
 
 export default function PatientForm({ formData, onChange, onSubmit, isLoading, onExcelImport, onDownloadTemplate }: PatientFormProps) {
-  // Estados para controlar la ventana modal y el "Drag & Drop"
   const [showModal, setShowModal] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Manejadores de Drag & Drop
+  // Bloquea letras 'e', signos de suma/resta y caracteres especiales en campos numéricos
+  const preventInvalidCharacters = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (['e', 'E', '+', '-'].includes(e.key)) {
+      e.preventDefault();
+    }
+  };
+
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(true);
@@ -35,17 +40,16 @@ export default function PatientForm({ formData, onChange, onSubmit, isLoading, o
     const file = e.dataTransfer.files[0];
     if (file) {
       onExcelImport(file);
-      setShowModal(false); // Cierra el modal tras importar
+      setShowModal(false);
     }
   };
 
-  // Manejador del botón tradicional de seleccionar archivo
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       onExcelImport(file);
-      setShowModal(false); // Cierra el modal tras importar
-      e.target.value = ''; // Resetea el input
+      setShowModal(false);
+      e.target.value = '';
     }
   };
 
@@ -54,17 +58,16 @@ export default function PatientForm({ formData, onChange, onSubmit, isLoading, o
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 md:p-6 relative">
         <div className="flex justify-between items-center mb-4 border-b pb-2">
           <h2 className="text-xl font-semibold text-slate-800">Historia Clínica</h2>
-          
-          {/* Botón que ahora abre la ventana emergente */}
-          <button 
-            type="button" 
-            onClick={() => setShowModal(true)} 
+
+          <button
+            type="button"
+            onClick={() => setShowModal(true)}
             className="flex items-center gap-1.5 text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold px-3 py-1.5 rounded-lg hover:bg-emerald-100 transition-colors shadow-sm"
           >
             <FileDown size={16} /> Cargar Paciente
           </button>
         </div>
-        
+
         <form onSubmit={onSubmit} className="space-y-4">
           {/* 1. Demografía */}
           <div>
@@ -72,22 +75,30 @@ export default function PatientForm({ formData, onChange, onSubmit, isLoading, o
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-medium text-slate-600 mb-1">F. Nacimiento</label>
-                <input required type="date" name="fecha_nacimiento" value={formData.fecha_nacimiento} onChange={onChange} className="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+                <input required type="date" name="fecha_nacimiento" max={new Date().toISOString().split("T")[0]} value={formData.fecha_nacimiento} onChange={onChange} className="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
               </div>
               <div>
                 <label className="block text-xs font-medium text-slate-600 mb-1">Género</label>
                 <select name="gender" value={formData.gender} onChange={onChange} className="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white">
-                  <option value="1">Mujer (1)</option>
-                  <option value="2">Hombre (2)</option>
+                  <option value="1">Mujer</option>
+                  <option value="2">Hombre</option>
                 </select>
               </div>
               <div>
                 <label className="block text-xs font-medium text-slate-600 mb-1">Altura (cm)</label>
-                <input required type="number" step="0.1" name="altura_cm" value={formData.altura_cm} onChange={onChange} placeholder="170" className="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+                <input 
+                  required type="number" step="0.1" min="50" max="250" 
+                  name="altura_cm" value={formData.altura_cm} onChange={onChange} onKeyDown={preventInvalidCharacters} 
+                  placeholder="170" className="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" 
+                />
               </div>
               <div>
                 <label className="block text-xs font-medium text-slate-600 mb-1">Peso (kg)</label>
-                <input required type="number" step="0.1" name="peso_kg" value={formData.peso_kg} onChange={onChange} placeholder="75.5" className="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+                <input 
+                  required type="number" step="0.1" min="20" max="300" 
+                  name="peso_kg" value={formData.peso_kg} onChange={onChange} onKeyDown={preventInvalidCharacters} 
+                  placeholder="75.5" className="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" 
+                />
               </div>
             </div>
           </div>
@@ -98,11 +109,19 @@ export default function PatientForm({ formData, onChange, onSubmit, isLoading, o
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-medium text-slate-600 mb-1">P. Sistólica</label>
-                <input required type="number" name="sistolica" value={formData.sistolica} onChange={onChange} placeholder="120" className="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+                <input 
+                  required type="number" min="50" max="250" 
+                  name="sistolica" value={formData.sistolica} onChange={onChange} onKeyDown={preventInvalidCharacters} 
+                  placeholder="120" className="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" 
+                />
               </div>
               <div>
                 <label className="block text-xs font-medium text-slate-600 mb-1">P. Diastólica</label>
-                <input required type="number" name="diastolica" value={formData.diastolica} onChange={onChange} placeholder="80" className="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" />
+                <input 
+                  required type="number" min="30" max="150" 
+                  name="diastolica" value={formData.diastolica} onChange={onChange} onKeyDown={preventInvalidCharacters} 
+                  placeholder="80" className="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" 
+                />
               </div>
               <div>
                 <label className="block text-xs font-medium text-slate-600 mb-1">Colesterol</label>
@@ -139,8 +158,8 @@ export default function PatientForm({ formData, onChange, onSubmit, isLoading, o
             </div>
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={isLoading}
             className={`w-full mt-2 font-bold py-2.5 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2
               ${isLoading ? 'bg-blue-400 cursor-not-allowed text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'}`}
@@ -164,9 +183,9 @@ export default function PatientForm({ formData, onChange, onSubmit, isLoading, o
       {showModal && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative animate-in fade-in zoom-in duration-200">
-            
-            <button 
-              onClick={() => setShowModal(false)} 
+
+            <button
+              onClick={() => setShowModal(false)}
               className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 rounded-full hover:bg-slate-100 transition-colors"
             >
               <X size={20} />
@@ -176,7 +195,7 @@ export default function PatientForm({ formData, onChange, onSubmit, isLoading, o
             <p className="text-sm text-slate-500 mb-6">Carga un archivo de Excel para autocompletar la historia clínica del paciente.</p>
 
             {/* Zona de Arrastrar y Soltar */}
-            <div 
+            <div
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
@@ -187,19 +206,19 @@ export default function PatientForm({ formData, onChange, onSubmit, isLoading, o
               <UploadCloud className={`mx-auto mb-3 ${isDragging ? 'text-blue-500' : 'text-slate-400'}`} size={40} />
               <p className="text-sm font-semibold text-slate-700">Haz clic o arrastra tu archivo aquí</p>
               <p className="text-xs text-slate-500 mt-1">Soporta .xlsx y .xls</p>
-              
-              <input 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={handleFileSelect} 
-                accept=".xlsx, .xls" 
-                className="hidden" 
+
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileSelect}
+                accept=".xlsx, .xls"
+                className="hidden"
               />
             </div>
 
             <div className="mt-6 pt-4 border-t border-slate-100 text-center">
               <p className="text-xs text-slate-500 mb-3">¿No tienes el formato correcto?</p>
-              <button 
+              <button
                 onClick={onDownloadTemplate}
                 className="flex items-center justify-center gap-2 w-full text-sm font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 py-2.5 rounded-lg transition-colors border border-blue-200"
               >

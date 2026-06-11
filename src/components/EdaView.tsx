@@ -1,11 +1,10 @@
 import { BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Database, Activity, Scissors, Target } from 'lucide-react';
 
-// DATOS EXTRAÍDOS DE TU NOTEBOOK (01_eda_cardio.ipynb)
 const kpis = {
   originales: 70000,
   duplicados: 24,
-  outliers: 1461, // Aprox, filtrando ap_hi, ap_lo, height, weight
+  outliers: 1461,
   limpios: 68515
 };
 
@@ -96,7 +95,7 @@ export default function EdaView() {
 
       {/* FILA 1 DE GRÁFICOS: Balance y Correlación */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        
+
         {/* Gráfico de Balance */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
           <h3 className="text-base font-bold text-slate-800 mb-1">Distribución de la Variable Objetivo (Cardio)</h3>
@@ -138,7 +137,7 @@ export default function EdaView() {
 
       {/* FILA 2 DE GRÁFICOS: Edad y Colesterol */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
+
         {/* Gráfico de Área: Edad */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
           <h3 className="text-base font-bold text-slate-800 mb-1">Prevalencia de Enfermedad por Grupos de Edad</h3>
@@ -148,12 +147,12 @@ export default function EdaView() {
               <AreaChart data={ageDistributionData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorSanos" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="colorEnfermos" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#ef4444" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />

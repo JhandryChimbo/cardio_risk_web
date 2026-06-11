@@ -7,7 +7,7 @@ interface RiskResultsProps {
   hasResult: boolean;
   riskData: RiskData | null;
   onReset: () => void;
-  onExportReport?: (format: 'pdf' | 'excel' | 'csv') => void; // <-- Nueva prop
+  onExportReport?: (format: 'pdf' | 'excel' | 'csv') => void;
 }
 
 const CHART_COLORS = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#a855f7', '#94a3b8'];
@@ -48,8 +48,8 @@ export default function RiskResults({ hasResult, riskData, onReset, onExportRepo
 
   const isHighRisk = riskData.nivel === 'alto';
   const probabilityData = [
-    { name: 'Riesgo', value: riskData.probabilidad, color: isHighRisk ? '#ef4444' : '#10b981' }, 
-    { name: 'Libre', value: 100 - riskData.probabilidad, color: '#f1f5f9' } 
+    { name: 'Riesgo', value: riskData.probabilidad, color: isHighRisk ? '#ef4444' : '#10b981' },
+    { name: 'Libre', value: 100 - riskData.probabilidad, color: '#f1f5f9' }
   ];
 
   const handleExportClick = (format: 'pdf' | 'excel' | 'csv') => {
@@ -67,10 +67,10 @@ export default function RiskResults({ hasResult, riskData, onReset, onExportRepo
           <div className={`px-3 py-1.5 rounded-lg font-bold text-sm text-center flex-1 sm:flex-initial ${isHighRisk ? 'bg-red-100 text-red-800' : 'bg-emerald-100 text-emerald-800'}`}>
             {riskData.alerta}
           </div>
-          
+
           {/* Menú Desplegable de Exportación */}
           <div className="relative">
-            <button 
+            <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
               className="flex items-center gap-1.5 bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold px-3 py-2 rounded-lg hover:bg-blue-100 transition-colors shadow-sm"
             >
@@ -104,12 +104,12 @@ export default function RiskResults({ hasResult, riskData, onReset, onExportRepo
             </span>
           </div>
         </div>
-        
+
         <div className="w-full h-65 border-t border-slate-100 pt-4">
           <h4 className="text-xs font-bold text-slate-500 text-center mb-1 uppercase tracking-wide">Pesos Predictivos (SHAP)</h4>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart margin={{ top: 10, right: 80, bottom: 10, left: 80 }}>
-              <Pie 
+              <Pie
                 data={riskData.factores} cx="50%" cy="50%" innerRadius={45} outerRadius={65} paddingAngle={3} dataKey="value" stroke="none"
                 label={({ name, value }) => name === 'Otros Factores' ? `Otros (${value}%)` : `${name} (${value}%)`}
                 labelLine={{ stroke: '#94a3b8', strokeWidth: 1, strokeDasharray: '3 3' }}

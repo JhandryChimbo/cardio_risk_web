@@ -59,12 +59,12 @@ export default function ModelView() {
 
       {/* SECCIÓN TÉCNICA: MATRIZ DE CONFUSIÓN Y CURVA ROC */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        
+
         {/* Matriz de Confusión Estilizada con CSS Premium */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
           <h3 className="text-base font-bold text-slate-800 mb-1">Matriz de Confusión (Datos de Test)</h3>
           <p className="text-xs text-slate-500 mb-6">Evaluada sobre el 20% del dataset retenido independiente (13,703 muestras limpias).</p>
-          
+
           <div className="grow flex flex-col justify-center max-w-sm mx-auto w-full">
             {/* Etiquetas Superiores */}
             <div className="grid grid-cols-3 text-center mb-2">
@@ -75,7 +75,7 @@ export default function ModelView() {
 
             {/* Fila 1: Real Sano */}
             <div className="grid grid-cols-3 gap-2 items-center mb-2">
-              <div className="text-right pr-2 text-xs font-bold text-slate-500 uppercase tracking-wider leading-tight">Real:<br/>Sano</div>
+              <div className="text-right pr-2 text-xs font-bold text-slate-500 uppercase tracking-wider leading-tight">Real:<br />Sano</div>
               <div className="bg-emerald-500 text-white p-4 rounded-xl text-center shadow-sm">
                 <p className="text-lg font-bold">5,120</p>
                 <p className="text-[10px] opacity-80 font-medium">Verdaderos Negativos</p>
@@ -88,7 +88,7 @@ export default function ModelView() {
 
             {/* Fila 2: Real Riesgo */}
             <div className="grid grid-cols-3 gap-2 items-center">
-              <div className="text-right pr-2 text-xs font-bold text-slate-500 uppercase tracking-wider leading-tight">Real:<br/>Riesgo</div>
+              <div className="text-right pr-2 text-xs font-bold text-slate-500 uppercase tracking-wider leading-tight">Real:<br />Riesgo</div>
               <div className="bg-slate-100 text-slate-700 p-4 rounded-xl text-center">
                 <p className="text-lg font-bold text-slate-800">1,845</p>
                 <p className="text-[10px] text-slate-500 font-medium">Falsos Negativos</p>
@@ -99,7 +99,7 @@ export default function ModelView() {
               </div>
             </div>
           </div>
-          
+
           <div className="mt-6 text-xs text-slate-500 bg-slate-50 p-3 rounded-lg border border-slate-100 leading-relaxed">
             💡 <strong>Análisis Clínico:</strong> El modelo prioriza un balance seguro. La baja tasa de Falsos Negativos (1,845) es crucial en medicina, ya que reduce la probabilidad de enviar a un paciente en riesgo a casa sin diagnóstico.
           </div>

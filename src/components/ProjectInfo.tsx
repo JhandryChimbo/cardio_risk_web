@@ -6,7 +6,7 @@ export default function ProjectInfo() {
       <div className="space-y-6 text-slate-600 grow overflow-y-auto">
         <section>
           <h3 className="text-xl font-semibold text-blue-800 mb-2">Objetivo Clínico</h3>
-          <p>Esta herramienta predictiva fue desarrollada como parte de un trabajo de tesis de la Universidad Católica de Santiago de Guayaquil, para estimar el riesgo de padecer enfermedades cardiovasculares en pacientes. Utiliza variables antropométricas, demográficas y clínicas.</p>
+          <p>Esta herramienta predictiva fue desarrollada como parte de un trabajo de tesis de la Universidad Nacional de Loja, para estimar el riesgo de padecer enfermedades cardiovasculares en pacientes. Utiliza variables antropométricas, demográficas y clínicas.</p>
         </section>
 
         <section>
@@ -20,8 +20,8 @@ export default function ProjectInfo() {
         </section>
         
         <section>
-          <h3 className="text-xl font-semibold text-blue-800 mb-2">Versión y Créditos</h3>
-          <p>Versión v1.0, Julio de 2024. Desarrollado por: Jhandry U. Tutor: [Nombre de tu tutor]. Universidad Católica de Santiago de Guayaquil.</p>
+          <h3 className="text-xl font-semibold text-blue-800 mb-2">Créditos</h3>
+          <p>Julio de 2026. Desarrollado por: Jhandry Santiago Chimbo Rivera. Universidad Nacional de Loja.</p>
         </section>
       </div>
     </div>

@@ -26,21 +26,21 @@ export default function Dashboard({ doctorProfile }: DashboardProps) {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // NUEVO: Función para generar y descargar la plantilla de Excel
+  // Función para generar y descargar la plantilla de Excel
   const handleDownloadTemplate = () => {
     // Definimos los encabezados exactos con instrucciones claras para el médico
     const templateData = [
       [
-        "Fecha Nacimiento (YYYY-MM-DD)", "Género (1=Mujer, 2=Hombre)", "Altura (cm)", 
-        "Peso (kg)", "Sistólica", "Diastólica", "Colesterol (1=Normal, 2=Alto, 3=Muy Alto)", 
+        "Fecha Nacimiento (YYYY-MM-DD)", "Género (1=Mujer, 2=Hombre)", "Altura (cm)",
+        "Peso (kg)", "Sistólica", "Diastólica", "Colesterol (1=Normal, 2=Alto, 3=Muy Alto)",
         "Glucosa (1=Normal, 2=Alta, 3=Muy Alta)", "Fuma (0=No, 1=Si)", "Alcohol (0=No, 1=Si)", "Activo (0=No, 1=Si)"
       ],
       // Fila de ejemplo
-      ["1985-05-24", 2, 175, 82, 140, 90, 2, 1, 1, 0, 1] 
+      ["1985-05-24", 2, 175, 82, 140, 90, 2, 1, 1, 0, 1]
     ];
 
     const ws = XLSX.utils.aoa_to_sheet(templateData);
-    
+
     // Auto-ajustar el ancho de las columnas para que se lea bien
     const wscols = templateData[0].map(header => ({ wch: String(header).length + 2 }));
     ws['!cols'] = wscols;
@@ -50,7 +50,6 @@ export default function Dashboard({ doctorProfile }: DashboardProps) {
     XLSX.writeFile(wb, "Plantilla_Importacion_CardioAI.xlsx");
   };
 
-  // ACTUALIZADO: Ahora recibe un objeto File directamente desde la zona Drag & Drop
   const handleExcelImport = (file: File) => {
     const reader = new FileReader();
     reader.onload = (evt) => {
@@ -94,7 +93,7 @@ export default function Dashboard({ doctorProfile }: DashboardProps) {
 
     if (format === 'pdf') {
       const doc = new jsPDF();
-      doc.setFillColor(30, 58, 138); 
+      doc.setFillColor(30, 58, 138);
       doc.rect(0, 0, 220, 25, 'F');
       doc.setTextColor(255, 255, 255);
       doc.setFontSize(16);
@@ -112,7 +111,7 @@ export default function Dashboard({ doctorProfile }: DashboardProps) {
       doc.setFontSize(12);
       doc.setFont("helvetica", "bold");
       doc.text("1. Historia Clínica Analizada", 14, 58);
-      
+
       (doc as any).autoTable({
         startY: 62,
         head: [['Parámetro Fisiológico', 'Valor del Paciente']],
@@ -137,7 +136,7 @@ export default function Dashboard({ doctorProfile }: DashboardProps) {
       doc.setFontSize(12);
       doc.setFont("helvetica", "bold");
       doc.text("2. Métrica de Riesgo de Inteligencia Artificial (XGBoost)", 14, currentY);
-      
+
       doc.setFontSize(11);
       doc.setFont("helvetica", "normal");
       doc.text(`Probabilidad Matemática de Riesgo Cardiovascular: ${riskData.probabilidad}%`, 14, currentY + 8);
@@ -164,21 +163,21 @@ export default function Dashboard({ doctorProfile }: DashboardProps) {
       doc.save(`Reporte_Cardiologia_IA_${formData.fecha_nacimiento}.pdf`);
     } else {
       const tabularData = [{
-          "Médico Validador": doctorProfile.nombre,
-          "Hospital": doctorProfile.hospital,
-          "Fecha Nacimiento": formData.fecha_nacimiento,
-          "Género": formData.gender === '1' ? 'Mujer' : 'Hombre',
-          "Altura_cm": formData.altura_cm,
-          "Peso_kg": formData.peso_kg,
-          "Sistolica": formData.sistolica,
-          "Diastolica": formData.diastolica,
-          "Colesterol": formData.cholesterol,
-          "Glucosa": formData.gluc,
-          "Fuma": formData.smoke,
-          "Alcohol": formData.alco,
-          "Activo": formData.active,
-          "Probabilidad_IA_%": riskData.probabilidad,
-          "Dictamen": riskData.alerta
+        "Médico Validador": doctorProfile.nombre,
+        "Hospital": doctorProfile.hospital,
+        "Fecha Nacimiento": formData.fecha_nacimiento,
+        "Género": formData.gender === '1' ? 'Mujer' : 'Hombre',
+        "Altura_cm": formData.altura_cm,
+        "Peso_kg": formData.peso_kg,
+        "Sistolica": formData.sistolica,
+        "Diastolica": formData.diastolica,
+        "Colesterol": formData.cholesterol,
+        "Glucosa": formData.gluc,
+        "Fuma": formData.smoke,
+        "Alcohol": formData.alco,
+        "Activo": formData.active,
+        "Probabilidad_IA_%": riskData.probabilidad,
+        "Dictamen": riskData.alerta
       }];
 
       const ws = XLSX.utils.json_to_sheet(tabularData);
@@ -202,7 +201,7 @@ export default function Dashboard({ doctorProfile }: DashboardProps) {
   const handleCalculate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     const payload = {
       edad_dias: calculateDaysAlive(formData.fecha_nacimiento),
       gender: parseInt(formData.gender),
@@ -239,21 +238,21 @@ export default function Dashboard({ doctorProfile }: DashboardProps) {
   return (
     <div className="max-w-350 mx-auto grid grid-cols-1 xl:grid-cols-12 gap-6">
       <div className="xl:col-span-5">
-        <PatientForm 
-          formData={formData} 
-          onChange={handleInputChange} 
-          onSubmit={handleCalculate} 
-          isLoading={isLoading} 
+        <PatientForm
+          formData={formData}
+          onChange={handleInputChange}
+          onSubmit={handleCalculate}
+          isLoading={isLoading}
           onExcelImport={handleExcelImport}
-          onDownloadTemplate={handleDownloadTemplate} // <-- Pasamos la nueva función
+          onDownloadTemplate={handleDownloadTemplate}
         />
       </div>
       <div className="xl:col-span-7">
-        <RiskResults 
-          hasResult={hasResult} 
-          riskData={riskData} 
-          onReset={() => setHasResult(false)} 
-          onExportReport={handleExportReport} 
+        <RiskResults
+          hasResult={hasResult}
+          riskData={riskData}
+          onReset={() => setHasResult(false)}
+          onExportReport={handleExportReport}
         />
       </div>
     </div>
