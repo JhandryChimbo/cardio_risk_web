@@ -509,16 +509,9 @@ Comprueba que:
 
 ---
 
-## 📄 Licencia
-
-[Especificar tu licencia]
-
----
-
 ## 👨‍💻 Autor
 
-[Tu nombre/equipo]
-
+Jhandry Santiago Chimbo Rivera
 ---
 
 **Última actualización**: Junio 2026
